@@ -1,0 +1,54 @@
+name: proto
+description: A highly efficient, personal assistant, Proto, for a Flutter application.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Database & Storage
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  flutter_secure_storage: ^9.0.0
+  path_provider: ^2.1.2
+
+  # AI & Networking
+  http: ^1.2.1
+  connectivity_plus: ^6.0.3
+
+  # UI & 3D
+  model_viewer_plus: ^1.7.0
+  code_text_field: any
+  google_fonts: ^6.2.1
+  highlight: ^0.7.0
+  flutter_spinkit: ^5.2.1
+  flutter_markdown: ^0.7.1
+
+  # Voice
+  flutter_tts: ^4.0.2
+  speech_to_text: ^7.0.0
+
+  # Git
+  process_run: ^1.1.0+1 # To run git commands via CLI
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.9
+  isar_generator: ^3.1.0+1
+  riverpod_generator: ^2.4.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/models/
+    - assets/images/
