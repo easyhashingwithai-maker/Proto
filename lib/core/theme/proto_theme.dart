@@ -33,7 +33,7 @@ class ProtoTheme {
         titleTextStyle: TextStyle(color: accent, fontSize: 20, fontWeight: FontWeight.bold),
       ),
       cardTheme: CardThemeData(
-        color: surface.withOpacity(0.7),
+        color: surface.withValues(alpha: 0.7),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: const BorderSide(color: accent, width: 0.5),

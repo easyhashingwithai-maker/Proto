@@ -9,12 +9,14 @@ class ProtoCodeEditor extends StatefulWidget {
   final String initialCode;
   final String language;
   final Function(String) onSave;
+  final Function(String)? onAnalyze;
 
   const ProtoCodeEditor({
     super.key,
     required this.initialCode,
     required this.language,
     required this.onSave,
+    this.onAnalyze,
   });
 
   @override
@@ -78,9 +80,18 @@ class _ProtoCodeEditorState extends State<ProtoCodeEditor> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          if (widget.onAnalyze != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: OutlinedButton.icon(
+                onPressed: () => widget.onAnalyze!(_codeController.text),
+                icon: const Icon(Icons.bug_report, size: 16),
+                label: const Text("Analyze"),
+              ),
+            ),
           ElevatedButton.icon(
             onPressed: () => widget.onSave(_codeController.text),
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save, size: 16),
             label: const Text("Save"),
             style: ElevatedButton.styleFrom(backgroundColor: ProtoTheme.accent),
           ),
@@ -90,7 +101,6 @@ class _ProtoCodeEditorState extends State<ProtoCodeEditor> {
   }
 
   Map<String, TextStyle> _getCustomTheme() {
-    // Simplified custom theme for syntax highlighting
     return {
       'root': const TextStyle(backgroundColor: Color(0xff0A0A0F), color: Color(0xffE0E0E0)),
       'keyword': const TextStyle(color: Color(0xff00D4FF), fontWeight: FontWeight.bold),

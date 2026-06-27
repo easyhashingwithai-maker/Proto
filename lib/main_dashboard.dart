@@ -8,8 +8,10 @@ import '../core/theme/proto_theme.dart';
 import '../features/code/ui/code_editor_widget.dart';
 import '../features/code/ui/file_tree_widget.dart';
 import '../features/git/ui/git_status_widget.dart';
+import '../features/voice/services/tts_service.dart';
 
 final aiOrchestratorProvider = Provider((ref) => AIOrchestrator(ConnectivityService()));
+final ttsServiceProvider = Provider((ref) => TTSService());
 
 class MainDashboard extends ConsumerStatefulWidget {
   const MainDashboard({super.key});
@@ -25,8 +27,19 @@ class _MainDashboardState extends ConsumerState<MainDashboard> {
   final TextEditingController _chatController = TextEditingController();
   final List<Map<String, String>> _messages = [];
 
-  void _handleSend() async {
-    final text = _chatController.text;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(ttsServiceProvider).setHandler(
+        () => setState(() => _isSpeaking = true),
+        () => setState(() => _isSpeaking = false),
+      );
+    });
+  }
+
+  void _handleSend([String? customText]) async {
+    final text = customText ?? _chatController.text;
     if (text.isEmpty) return;
 
     setState(() {
@@ -39,6 +52,8 @@ class _MainDashboardState extends ConsumerState<MainDashboard> {
     setState(() {
       _messages.add({'role': 'proto', 'content': response});
     });
+
+    await ref.read(ttsServiceProvider).speak(response);
   }
 
   @override
@@ -116,6 +131,10 @@ class _MainDashboardState extends ConsumerState<MainDashboard> {
                     _selectedFile!.writeAsStringSync(code);
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("File saved.")));
                   },
+                  onAnalyze: (code) {
+                    setState(() => _selectedIndex = 0);
+                    _handleSend("Analyze this code for bugs:\n\n$code");
+                  },
                 ),
         ),
       ],
@@ -135,7 +154,7 @@ class _MainDashboardState extends ConsumerState<MainDashboard> {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
                 decoration: BoxDecoration(
-                  color: isUser ? Colors.white.withOpacity(0.05) : ProtoTheme.accent.withOpacity(0.05),
+                  color: isUser ? Colors.white.withValues(alpha: 0.05) : ProtoTheme.accent.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -183,7 +202,7 @@ class _MainDashboardState extends ConsumerState<MainDashboard> {
                 subtitle: const Text("Offline mode enabled"),
                 value: true,
                 onChanged: (v) {},
-                activeColor: ProtoTheme.accent,
+                activeThumbColor: ProtoTheme.accent,
               ),
               const Divider(),
               Padding(
